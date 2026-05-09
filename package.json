@@ -1,32 +1,48 @@
 {
-  "name": "futubrowser",
-  "private": true,
-  "type": "module",
-  "scripts": {
-    "build": "react-router build",
-    "dev": "react-router dev",
-    "start": "react-router-serve ./build/server/index.js",
-    "typecheck": "react-router typegen && tsc",
-    "prepare": "husky"
-  },
-  "dependencies": {
-    "@react-router/node": "7.15.0",
-    "@react-router/serve": "7.15.0",
-    "isbot": "^5.1.36",
-    "react": "^19.2.6",
-    "react-dom": "^19.2.6",
-    "react-router": "7.15.0"
-  },
-  "devDependencies": {
-    "@react-router/dev": "7.15.0",
-    "@tailwindcss/vite": "^4.2.2",
-    "@types/node": "^22",
-    "@types/react": "^19.2.14",
-    "@types/react-dom": "^19.2.3",
-    "husky": "^9.1.7",
-    "prettier": "3.8.3",
-    "tailwindcss": "^4.2.2",
-    "typescript": "^5.9.3",
-    "vite": "^8.0.3"
-  }
+    "name": "futubrowser",
+    "private": true,
+    "type": "module",
+    "scripts": {
+        "build": "react-router build",
+        "dev": "react-router dev",
+        "start": "react-router-serve ./build/server/index.js",
+        "typecheck": "react-router typegen && tsc",
+        "prepare": "husky",
+        "lint": "eslint . --max-warnings=0 --fix"
+    },
+    "lint-staged": {
+        "*.{js,jsx,ts,tsx}": [
+            "eslint --fix",
+            "prettier --write"
+        ],
+        "*.{json,css,md}": "prettier --write"
+    },
+    "dependencies": {
+        "@react-router/node": "7.15.0",
+        "@react-router/serve": "7.15.0",
+        "isbot": "^5.1.36",
+        "react": "^19.2.6",
+        "react-dom": "^19.2.6",
+        "react-router": "7.15.0"
+    },
+    "devDependencies": {
+        "@eslint/js": "^10.0.1",
+        "@react-router/dev": "7.15.0",
+        "@tailwindcss/vite": "^4.2.2",
+        "@types/node": "^22",
+        "@types/react": "^19.2.14",
+        "@types/react-dom": "^19.2.3",
+        "eslint": "^10.3.0",
+        "eslint-config-prettier": "^10.1.8",
+        "eslint-plugin-react": "^7.37.5",
+        "globals": "^17.6.0",
+        "husky": "^9.1.7",
+        "jiti": "^2.7.0",
+        "lint-staged": "^17.0.2",
+        "prettier": "3.8.3",
+        "tailwindcss": "^4.2.2",
+        "typescript": "^5.9.3",
+        "typescript-eslint": "^8.59.2",
+        "vite": "^8.0.3"
+    }
 }
