@@ -12,9 +12,13 @@ export interface PhotosPage {
 
 const PAGE_SIZE = 12
 
-export async function fetchPhotosPage(page = 1): Promise<PhotosPage> {
+export async function fetchPhotosPage(
+  page = 1,
+  signal?: AbortSignal
+): Promise<PhotosPage> {
   const response = await fetch(
-    `https://jsonplaceholder.typicode.com/albums/1/photos?_page=${page}&_limit=${PAGE_SIZE}`
+    `https://jsonplaceholder.typicode.com/albums/1/photos?_page=${page}&_limit=${PAGE_SIZE}`,
+    { signal }
   )
 
   if (!response.ok) {

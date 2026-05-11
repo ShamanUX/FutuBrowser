@@ -8,6 +8,15 @@ vi.mock('../components/thumbnail-grid/photosApi', () => ({
   fetchPhotosPage: vi.fn(),
 }))
 
+vi.mock('react-medium-image-zoom', async () => {
+  const React = await import('react')
+
+  return {
+    default: ({ children }: { children: React.ReactNode }) =>
+      React.createElement(React.Fragment, null, children),
+  }
+})
+
 vi.mock('react-infinite-scroll-component', async () => {
   const React = await import('react')
 
