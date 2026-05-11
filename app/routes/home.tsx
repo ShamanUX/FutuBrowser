@@ -1,12 +1,19 @@
-import { Welcome } from '../welcome/welcome'
-
 export function meta() {
   return [
-    { title: 'New React Router App' },
-    { name: 'description', content: 'Welcome to React Router!' },
+    { title: 'FutuBrowser' },
+    { name: 'description', content: 'Welcome to FutuBrowser!' },
   ]
 }
 
 export default function Home() {
-  return <Welcome />
+  fetch('https://jsonplaceholder.typicode.com/albums/1/photos')
+    .then((response) => response.json())
+    .then((json) => console.log(json))
+  return (
+    <>
+      <div className="h-full w-full">
+        <p>This is Futubrowser!</p>
+      </div>
+    </>
+  )
 }
