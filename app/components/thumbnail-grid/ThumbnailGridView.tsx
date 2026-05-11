@@ -47,6 +47,7 @@ export function ThumbnailGridView({
       onClose={onModalClose}
       onNavigatePhoto={onModalNavigatePhoto}
       photo={selectedPhoto}
+      selectedPhotoId={selectedPhotoId}
       totalCount={totalCount}
     />
   ) : null
@@ -142,7 +143,7 @@ function Header() {
           Thumbnail Grid
         </h1>
         <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600 dark:text-slate-300">
-          Browse a lightweight stream of JSONPlaceholder album thumbnails.
+          Browse a stream of photos.
         </p>
       </div>
       <button

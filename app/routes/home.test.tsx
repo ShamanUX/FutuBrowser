@@ -53,16 +53,16 @@ const firstPhoto = {
   albumId: 1,
   id: 1,
   title: 'accusamus beatae ad facilis cum similique qui sunt',
-  url: 'https://via.placeholder.com/600/92c952',
-  thumbnailUrl: 'https://via.placeholder.com/150/92c952',
+  url: 'https://picsum.photos/id/1/900/900',
+  thumbnailUrl: 'https://picsum.photos/id/1/300/300',
 }
 
 const secondPhoto = {
   albumId: 1,
   id: 2,
   title: 'reprehenderit est deserunt velit ipsam',
-  url: 'https://via.placeholder.com/600/771796',
-  thumbnailUrl: 'https://via.placeholder.com/150/771796',
+  url: 'https://picsum.photos/id/2/900/900',
+  thumbnailUrl: 'https://picsum.photos/id/2/300/300',
 }
 
 function renderHome(initialEntry = '/') {
@@ -87,6 +87,7 @@ describe('Home', () => {
 
   afterEach(() => {
     cleanup()
+    vi.unstubAllGlobals()
   })
 
   it('shows thumbnails are loading while the first page loads', () => {
@@ -225,6 +226,63 @@ describe('Home', () => {
     expect(
       within(dialog).getByText(firstPhoto.thumbnailUrl)
     ).toBeInTheDocument()
+  })
+
+  it('shows modal skeletons and disabled arrows while photo details are loading', async () => {
+    fetchPhotosPageMock.mockResolvedValue({ items: [], totalCount: 3 })
+    fetchPhotoMock.mockReturnValue(new Promise(() => {}))
+
+    renderHome('/p/2/')
+
+    const dialog = await screen.findByRole('dialog', {
+      name: 'Loading photo details',
+    })
+
+    expect(screen.getByTestId('photo-image-skeleton')).toBeInTheDocument()
+    expect(screen.getByTestId('photo-details-skeleton')).toBeInTheDocument()
+    expect(
+      within(dialog).getByRole('button', { name: 'Previous photo' })
+    ).toBeDisabled()
+    expect(
+      within(dialog).getByRole('button', { name: 'Next photo' })
+    ).toBeDisabled()
+  })
+
+  it('keeps the image skeleton until the modal image is ready', async () => {
+    fetchPhotosPageMock.mockResolvedValue({
+      items: [firstPhoto],
+      totalCount: 2,
+    })
+    fetchPhotoMock.mockResolvedValue(firstPhoto)
+
+    renderHome('/p/1/')
+
+    const dialog = await screen.findByRole('dialog', { name: firstPhoto.title })
+    const image = within(dialog).getByRole('img', { name: firstPhoto.title })
+
+    expect(screen.getByTestId('photo-image-skeleton')).toBeInTheDocument()
+
+    fireEvent.load(image)
+
+    expect(screen.queryByTestId('photo-image-skeleton')).not.toBeInTheDocument()
+  })
+
+  it('shows an image error instead of keeping the image skeleton forever', async () => {
+    fetchPhotosPageMock.mockResolvedValue({
+      items: [firstPhoto],
+      totalCount: 2,
+    })
+    fetchPhotoMock.mockResolvedValue(firstPhoto)
+
+    renderHome('/p/1/')
+
+    const dialog = await screen.findByRole('dialog', { name: firstPhoto.title })
+    const image = within(dialog).getByRole('img', { name: firstPhoto.title })
+
+    fireEvent.error(image)
+
+    expect(screen.queryByTestId('photo-image-skeleton')).not.toBeInTheDocument()
+    expect(within(dialog).getByText('Could not load image')).toBeInTheDocument()
   })
 
   it('closes photo details and returns to the grid URL', async () => {

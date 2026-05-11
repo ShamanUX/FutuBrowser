@@ -1,5 +1,5 @@
 import { NavArrowLeft, NavArrowRight, Xmark } from 'iconoir-react'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 
 import type { Photo } from './photosApi'
 
@@ -9,6 +9,7 @@ interface PhotoDetailsModalProps {
   onClose: () => void
   onNavigatePhoto: (photoId: number) => void
   photo: Photo | null
+  selectedPhotoId: number
   totalCount: number | null
 }
 
@@ -18,8 +19,14 @@ export function PhotoDetailsModal({
   onClose,
   onNavigatePhoto,
   photo,
+  selectedPhotoId,
   totalCount,
 }: PhotoDetailsModalProps) {
+  const [imageStatus, setImageStatus] = useState<{
+    status: 'error' | 'loaded'
+    url: string
+  } | null>(null)
+
   useEffect(() => {
     function closeOnEscape(event: KeyboardEvent) {
       if (event.key === 'Escape') {
@@ -31,11 +38,23 @@ export function PhotoDetailsModal({
     return () => window.removeEventListener('keydown', closeOnEscape)
   }, [onClose])
 
-  const previousPhotoId = photo ? photo.id - 1 : null
-  const nextPhotoId = photo ? photo.id + 1 : null
-  const isPreviousDisabled = !photo || photo.id <= 1
+  const previousPhotoId = selectedPhotoId - 1
+  const nextPhotoId = selectedPhotoId + 1
+  const isPreviousDisabled =
+    !photo || isLoading || selectedPhotoId <= 1 || Boolean(error)
   const isNextDisabled =
-    !photo || (totalCount !== null && photo.id >= totalCount)
+    !photo ||
+    isLoading ||
+    Boolean(error) ||
+    (totalCount !== null && selectedPhotoId >= totalCount)
+  const isImageReady =
+    Boolean(photo) &&
+    imageStatus?.url === photo?.url &&
+    imageStatus?.status === 'loaded'
+  const imageLoadFailed =
+    Boolean(photo) &&
+    imageStatus?.url === photo?.url &&
+    imageStatus?.status === 'error'
 
   return (
     <div
@@ -55,20 +74,23 @@ export function PhotoDetailsModal({
             <p className="text-xs font-semibold uppercase tracking-[0.24em] text-slate-500 dark:text-slate-400">
               Photo details
             </p>
-            <h2
-              className="mt-1 text-2xl font-semibold tracking-tight"
-              id="photo-details-title"
-            >
-              {photo?.title ?? 'Loading photo'}
-            </h2>
+            {photo ? (
+              <h2
+                className="mt-1 text-2xl font-semibold tracking-tight"
+                id="photo-details-title"
+              >
+                {photo.title}
+              </h2>
+            ) : (
+              <div
+                aria-label="Loading photo details"
+                className="mt-2 h-8 w-3/4 animate-pulse rounded-full bg-slate-200/70 backdrop-blur dark:bg-slate-800/70"
+                id="photo-details-title"
+                role="status"
+              />
+            )}
           </div>
         </div>
-
-        {isLoading && (
-          <p className="rounded-2xl border border-slate-200 bg-slate-50 p-4 text-sm font-medium text-slate-600 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-300">
-            Loading photo details
-          </p>
-        )}
 
         {error && (
           <p className="rounded-2xl border border-rose-200 bg-rose-50 p-4 text-sm font-medium text-rose-950 dark:border-rose-900/70 dark:bg-rose-950/30 dark:text-rose-100">
@@ -76,21 +98,50 @@ export function PhotoDetailsModal({
           </p>
         )}
 
-        {photo && !error && (
+        {!error && (
           <div className="grid gap-5 lg:grid-cols-[minmax(0,1.25fr)_minmax(280px,0.75fr)]">
-            <img
-              alt={photo.title}
-              className="aspect-square w-full rounded-2xl bg-slate-100 object-cover ring-1 ring-slate-200/70 dark:bg-slate-900 dark:ring-slate-800"
-              src={photo.url}
-            />
+            <div className="relative aspect-square w-full overflow-hidden rounded-2xl bg-slate-100 ring-1 ring-slate-200/70 dark:bg-slate-900 dark:ring-slate-800">
+              {photo && (
+                <img
+                  alt={photo.title}
+                  className={`h-full w-full object-cover transition-opacity duration-200 ${
+                    isImageReady ? 'opacity-100' : 'opacity-0'
+                  }`}
+                  key={photo.url}
+                  onError={() =>
+                    setImageStatus({ status: 'error', url: photo.url })
+                  }
+                  onLoad={() =>
+                    setImageStatus({ status: 'loaded', url: photo.url })
+                  }
+                  src={photo.url}
+                />
+              )}
+              {(!photo || (!isImageReady && !imageLoadFailed)) && (
+                <div
+                  aria-hidden="true"
+                  className="absolute inset-0 animate-pulse rounded-2xl bg-slate-200/60 backdrop-blur-sm dark:bg-slate-800/60"
+                  data-testid="photo-image-skeleton"
+                />
+              )}
+              {imageLoadFailed && (
+                <div className="absolute inset-0 flex items-center justify-center p-6 text-center text-sm font-medium text-slate-600 dark:text-slate-300">
+                  Could not load image
+                </div>
+              )}
+            </div>
 
             <div>
-              <dl className="divide-y divide-slate-200 overflow-hidden rounded-2xl border border-slate-200 text-sm dark:divide-slate-800 dark:border-slate-800">
-                <DetailRow label="Image ID" value={String(photo.id)} />
-                <DetailRow label="Album ID" value={String(photo.albumId)} />
-                <DetailRow label="URL" value={photo.url} />
-                <DetailRow label="Thumbnail URL" value={photo.thumbnailUrl} />
-              </dl>
+              {photo ? (
+                <dl className="divide-y divide-slate-200 overflow-hidden rounded-2xl border border-slate-200 text-sm dark:divide-slate-800 dark:border-slate-800">
+                  <DetailRow label="Image ID" value={String(photo.id)} />
+                  <DetailRow label="Album ID" value={String(photo.albumId)} />
+                  <DetailRow label="URL" value={photo.url} />
+                  <DetailRow label="Thumbnail URL" value={photo.thumbnailUrl} />
+                </dl>
+              ) : (
+                <DetailsSkeleton />
+              )}
             </div>
           </div>
         )}
@@ -105,14 +156,14 @@ export function PhotoDetailsModal({
         <Xmark aria-hidden="true" height={30} width={30} />
       </button>
 
-      {photo && !error && (
+      {!error && (
         <>
           <button
             aria-label="Previous photo"
             className="fixed left-3 top-1/2 z-[60] inline-flex h-14 w-14 -translate-y-1/2 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-950 shadow-xl shadow-slate-950/20 ring-1 ring-slate-950/5 transition hover:-translate-x-0.5 hover:bg-slate-100 focus:outline focus:outline-2 focus:outline-offset-2 focus:outline-white disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:translate-x-0 sm:left-6 sm:h-16 sm:w-16 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-50 dark:ring-white/10 dark:hover:bg-slate-800"
             disabled={isPreviousDisabled}
             onClick={() => {
-              if (previousPhotoId !== null) {
+              if (!isPreviousDisabled) {
                 onNavigatePhoto(previousPhotoId)
               }
             }}
@@ -125,7 +176,7 @@ export function PhotoDetailsModal({
             className="fixed right-3 top-1/2 z-[60] inline-flex h-14 w-14 -translate-y-1/2 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-950 shadow-xl shadow-slate-950/20 ring-1 ring-slate-950/5 transition hover:translate-x-0.5 hover:bg-slate-100 focus:outline focus:outline-2 focus:outline-offset-2 focus:outline-white disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:translate-x-0 sm:right-6 sm:h-16 sm:w-16 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-50 dark:ring-white/10 dark:hover:bg-slate-800"
             disabled={isNextDisabled}
             onClick={() => {
-              if (nextPhotoId !== null) {
+              if (!isNextDisabled) {
                 onNavigatePhoto(nextPhotoId)
               }
             }}
@@ -135,6 +186,26 @@ export function PhotoDetailsModal({
           </button>
         </>
       )}
+    </div>
+  )
+}
+
+function DetailsSkeleton() {
+  return (
+    <div
+      aria-hidden="true"
+      className="overflow-hidden rounded-2xl border border-slate-200 bg-white/40 backdrop-blur-sm dark:border-slate-800 dark:bg-slate-900/30"
+      data-testid="photo-details-skeleton"
+    >
+      {Array.from({ length: 4 }, (_, index) => (
+        <div
+          className="grid gap-2 border-b border-slate-200 p-3 last:border-b-0 sm:grid-cols-[110px_minmax(0,1fr)] dark:border-slate-800"
+          key={index}
+        >
+          <div className="h-4 w-20 animate-pulse rounded-full bg-slate-200/60 dark:bg-slate-800/70" />
+          <div className="h-4 w-full animate-pulse rounded-full bg-slate-200/60 dark:bg-slate-800/70" />
+        </div>
+      ))}
     </div>
   )
 }

@@ -12,6 +12,28 @@ export interface PhotosPage {
 }
 
 const PAGE_SIZE = 12
+const FULL_IMAGE_SIZE = 900
+const THUMBNAIL_IMAGE_SIZE = 300
+
+function getPicsumUrl(photoId: number, size: number) {
+  return `https://picsum.photos/id/${photoId}/${size}/${size}`
+}
+
+export function getPhotoImageUrl(photoId: number) {
+  return getPicsumUrl(photoId, FULL_IMAGE_SIZE)
+}
+
+export function getPhotoThumbnailUrl(photoId: number) {
+  return getPicsumUrl(photoId, THUMBNAIL_IMAGE_SIZE)
+}
+
+function withPicsumUrls(photo: Photo, imageId = photo.id): Photo {
+  return {
+    ...photo,
+    thumbnailUrl: getPhotoThumbnailUrl(imageId),
+    url: getPhotoImageUrl(imageId),
+  }
+}
 
 export async function fetchPhotosPage(
   page = 1,
@@ -33,7 +55,9 @@ export async function fetchPhotosPage(
   }
 
   return {
-    items: (await response.json()) as Photo[],
+    items: ((await response.json()) as Photo[]).map((photo) =>
+      withPicsumUrls(photo)
+    ),
     totalCount,
   }
 }
@@ -51,5 +75,5 @@ export async function fetchPhoto(
     throw new Error('Could not load photo')
   }
 
-  return (await response.json()) as Photo
+  return withPicsumUrls((await response.json()) as Photo, photoId)
 }
