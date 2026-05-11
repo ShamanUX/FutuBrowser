@@ -22,6 +22,7 @@
   "dependencies": {
     "@react-router/node": "7.15.0",
     "@react-router/serve": "7.15.0",
+    "iconoir-react": "^7.11.0",
     "isbot": "^5.1.36",
     "react": "^19.2.6",
     "react-dom": "^19.2.6",
