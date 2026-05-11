@@ -1,4 +1,5 @@
 export interface Photo {
+  albumId: number
   id: number
   title: string
   url: string
@@ -35,4 +36,20 @@ export async function fetchPhotosPage(
     items: (await response.json()) as Photo[],
     totalCount,
   }
+}
+
+export async function fetchPhoto(
+  photoId: number,
+  signal?: AbortSignal
+): Promise<Photo> {
+  const response = await fetch(
+    `https://jsonplaceholder.typicode.com/photos/${photoId}`,
+    { signal }
+  )
+
+  if (!response.ok) {
+    throw new Error('Could not load photo')
+  }
+
+  return (await response.json()) as Photo
 }

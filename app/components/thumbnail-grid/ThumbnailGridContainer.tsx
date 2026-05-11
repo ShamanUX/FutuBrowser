@@ -1,7 +1,13 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
+import { useNavigate, useParams } from 'react-router'
 
 import { ThumbnailGridView } from './ThumbnailGridView'
-import { fetchPhotosPage, type Photo, type PhotosPage } from './photosApi'
+import {
+  fetchPhoto,
+  fetchPhotosPage,
+  type Photo,
+  type PhotosPage,
+} from './photosApi'
 
 interface PrefetchedPage {
   pageNumber: number
@@ -10,12 +16,21 @@ interface PrefetchedPage {
 }
 
 export function ThumbnailGridContainer() {
+  const navigate = useNavigate()
+  const params = useParams()
+
   const [error, setError] = useState<string | null>(null)
   const [hasMore, setHasMore] = useState(false)
   const [photos, setPhotos] = useState<Photo[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [isLoadingMore, setIsLoadingMore] = useState(false)
   const [loadMoreError, setLoadMoreError] = useState<string | null>(null)
+  const [selectedPhoto, setSelectedPhoto] = useState<Photo | null>(null)
+  const [selectedPhotoError, setSelectedPhotoError] = useState<string | null>(
+    null
+  )
+  const [selectedPhotoIsLoading, setSelectedPhotoIsLoading] = useState(false)
+  const [totalCount, setTotalCount] = useState<number | null>(null)
 
   const activeControllersRef = useRef<Set<AbortController>>(new Set())
   const hasMoreRef = useRef(false)
@@ -24,6 +39,12 @@ export function ThumbnailGridContainer() {
   const photosLengthRef = useRef(0)
   const prefetchedPageRef = useRef<PrefetchedPage | null>(null)
   const prefetchingPageRef = useRef<number | null>(null)
+
+  const photoIdParam = params.photoId ? Number(params.photoId) : null
+  const selectedPhotoId =
+    photoIdParam && Number.isInteger(photoIdParam) && photoIdParam > 0
+      ? photoIdParam
+      : null
 
   function createAbortController() {
     const controller = new AbortController()
@@ -95,6 +116,7 @@ export function ThumbnailGridContainer() {
     setError(null)
     setHasMore(false)
     setLoadMoreError(null)
+    setTotalCount(null)
     setIsLoading(true)
     setIsLoadingMore(false)
     setPhotos([])
@@ -109,6 +131,7 @@ export function ThumbnailGridContainer() {
         const nextHasMore = page.items.length < page.totalCount
         setHasMore(nextHasMore)
         hasMoreRef.current = nextHasMore
+        setTotalCount(page.totalCount)
 
         nextPageRef.current = 2
 
@@ -154,6 +177,7 @@ export function ThumbnailGridContainer() {
 
         setPhotos((currentPhotos) => [...currentPhotos, ...page.items])
         photosLengthRef.current = loadedCount
+        setTotalCount(page.totalCount)
 
         setHasMore(nextHasMore)
         hasMoreRef.current = nextHasMore
@@ -187,6 +211,7 @@ export function ThumbnailGridContainer() {
         const nextHasMore = loadedCount < page.totalCount
         setHasMore(nextHasMore)
         hasMoreRef.current = nextHasMore
+        setTotalCount(page.totalCount)
 
         nextPageRef.current = pageNumber + 1
 
@@ -221,6 +246,65 @@ export function ThumbnailGridContainer() {
     }
   }, [loadFirstPage])
 
+  useEffect(() => {
+    if (selectedPhotoId === null) {
+      setSelectedPhoto(null)
+      setSelectedPhotoError(null)
+      setSelectedPhotoIsLoading(false)
+      return
+    }
+
+    const loadedPhoto = photos.find((photo) => photo.id === selectedPhotoId)
+
+    if (loadedPhoto) {
+      setSelectedPhoto(loadedPhoto)
+      setSelectedPhotoError(null)
+      setSelectedPhotoIsLoading(false)
+      return
+    }
+
+    const controller = createAbortController()
+
+    setSelectedPhoto(null)
+    setSelectedPhotoError(null)
+    setSelectedPhotoIsLoading(true)
+
+    fetchPhoto(selectedPhotoId, controller.signal)
+      .then((photo) => {
+        setSelectedPhoto(photo)
+      })
+      .catch((caughtError: unknown) => {
+        if (
+          caughtError instanceof DOMException &&
+          caughtError.name === 'AbortError'
+        ) {
+          return
+        }
+
+        setSelectedPhotoError('Could not load photo details')
+      })
+      .finally(() => {
+        setSelectedPhotoIsLoading(false)
+        releaseAbortController(controller)
+      })
+
+    return () => {
+      controller.abort()
+      releaseAbortController(controller)
+    }
+  }, [photos, selectedPhotoId])
+
+  const closeModal = useCallback(() => {
+    navigate('/', { preventScrollReset: true })
+  }, [navigate])
+
+  const navigateModalPhoto = useCallback(
+    (photoId: number) => {
+      navigate(`/p/${photoId}/`, { preventScrollReset: true })
+    },
+    [navigate]
+  )
+
   return (
     <ThumbnailGridView
       error={error}
@@ -229,8 +313,15 @@ export function ThumbnailGridContainer() {
       isLoadingMore={isLoadingMore}
       loadMoreError={loadMoreError}
       onLoadMore={loadMore}
+      onModalClose={closeModal}
+      onModalNavigatePhoto={navigateModalPhoto}
       onRetry={loadFirstPage}
       photos={photos}
+      selectedPhoto={selectedPhoto}
+      selectedPhotoError={selectedPhotoError}
+      selectedPhotoId={selectedPhotoId}
+      selectedPhotoIsLoading={selectedPhotoIsLoading}
+      totalCount={totalCount}
     />
   )
 }
