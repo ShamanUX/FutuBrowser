@@ -1,87 +1,81 @@
-# Welcome to React Router!
+# FutuBrowser
 
-A modern, production-ready template for building full-stack React applications using React Router.
+FutuBrowser is a React Router photo browsing app. The current app focuses on one feature: browsing image thumbnails in a grid, with more features indicated as upcoming in the Home header.
 
-[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/remix-run/react-router-templates/tree/main/default)
+## Current Functionality
 
-## Features
+- Home page with thumbnail browsing as the selected feature.
+- Disabled upcoming feature button with an `Upcoming feature` tooltip.
+- Infinite thumbnail grid backed by `jsonplaceholder.typicode.com/photos` metadata and Picsum image URLs.
+- Prefetching for the next thumbnail page to make loading more items feel faster.
+- Photo details modal opened from `/p/:photoId/` routes.
+- Modal navigation for previous and next photos.
+- Loading, retry, and error states for both the initial grid load and loading more thumbnails.
+- Dark mode support through Tailwind's `prefers-color-scheme` handling.
 
-- 🚀 Server-side rendering
-- ⚡️ Hot Module Replacement (HMR)
-- 📦 Asset bundling and optimization
-- 🔄 Data loading and mutations
-- 🔒 TypeScript by default
-- 🎉 TailwindCSS for styling
-- 📖 [React Router docs](https://reactrouter.com/)
+## Tech Stack
 
-## Getting Started
+- React 19
+- React Router 7
+- TypeScript
+- Tailwind CSS 4
+- Vitest
+- Testing Library
 
-### Installation
+## Setup
 
-Install the dependencies:
-
-```bash
-npm install
-```
-
-### Development
-
-Start the development server with HMR:
+Install dependencies:
 
 ```bash
-npm run dev
+pnpm install
 ```
 
-Your application will be available at `http://localhost:5173`.
+Start the development server:
 
-## Building for Production
+```bash
+pnpm dev
+```
+
+The app runs at `http://localhost:5173` by default.
+
+## Scripts
+
+- `pnpm dev`: start the local React Router dev server with HMR.
+- `pnpm test`: run the Vitest test suite once.
+- `pnpm test:watch`: run tests in watch mode.
+- `pnpm typecheck`: generate React Router types and run TypeScript checks.
+- `pnpm lint`: run ESLint with auto-fix enabled and fail on warnings.
+- `pnpm build`: create a production build.
+- `pnpm start`: serve the production build from `./build/server/index.js`.
+
+## Testing
+
+Run all tests:
+
+```bash
+pnpm test
+```
+
+The test suite covers the Home route, thumbnail loading behavior, error and retry states, modal routing, modal navigation, and photo API URL mapping.
+
+Run type checks:
+
+```bash
+pnpm typecheck
+```
+
+## Production Build
 
 Create a production build:
 
 ```bash
-npm run build
+pnpm build
 ```
 
-## Deployment
-
-### Docker Deployment
-
-To build and run using Docker:
+Serve the built app locally:
 
 ```bash
-docker build -t my-app .
-
-# Run the container
-docker run -p 3000:3000 my-app
+pnpm start
 ```
 
-The containerized application can be deployed to any platform that supports Docker, including:
-
-- AWS ECS
-- Google Cloud Run
-- Azure Container Apps
-- Digital Ocean App Platform
-- Fly.io
-- Railway
-
-### DIY Deployment
-
-If you're familiar with deploying Node applications, the built-in app server is production-ready.
-
-Make sure to deploy the output of `npm run build`
-
-```
-├── package.json
-├── package-lock.json (or pnpm-lock.yaml, or bun.lockb)
-├── build/
-│   ├── client/    # Static assets
-│   └── server/    # Server-side code
-```
-
-## Styling
-
-This template comes with [Tailwind CSS](https://tailwindcss.com/) already configured for a simple default starting experience. You can use whatever CSS framework you prefer.
-
----
-
-Built with ❤️ using React Router.
+React Router outputs the production build to `build/`, including client assets and server code.
