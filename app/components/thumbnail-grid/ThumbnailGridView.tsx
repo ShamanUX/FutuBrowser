@@ -1,4 +1,3 @@
-import { ViewGrid } from 'iconoir-react'
 import InfiniteScroll from 'react-infinite-scroll-component'
 
 import { PhotoDetailsModal } from './PhotoDetailsModal'
@@ -55,8 +54,7 @@ export function ThumbnailGridView({
   if (isLoading) {
     return (
       <>
-        <main className="mx-auto min-h-dvh w-full max-w-6xl px-4 py-6 text-slate-950 sm:px-6 sm:py-10 dark:text-slate-50">
-          <Header />
+        <section aria-label="Thumbnail grid">
           <p className="sr-only">Loading thumbnails</p>
           <div className="grid grid-cols-3 gap-1.5 sm:gap-2.5 md:gap-3">
             {Array.from({ length: 12 }, (_, index) => (
@@ -67,7 +65,7 @@ export function ThumbnailGridView({
               />
             ))}
           </div>
-        </main>
+        </section>
         {modal}
       </>
     )
@@ -76,8 +74,7 @@ export function ThumbnailGridView({
   if (error) {
     return (
       <>
-        <main className="mx-auto min-h-dvh w-full max-w-6xl px-4 py-6 text-slate-950 sm:px-6 sm:py-10 dark:text-slate-50">
-          <Header />
+        <section aria-label="Thumbnail grid">
           <section className="rounded-2xl border border-rose-200 bg-rose-50 p-5 text-rose-950 shadow-sm dark:border-rose-900/70 dark:bg-rose-950/30 dark:text-rose-100">
             <p className="font-medium">{error}</p>
             <p className="mt-1 text-sm text-rose-800 dark:text-rose-200">
@@ -91,7 +88,7 @@ export function ThumbnailGridView({
           >
             Retry
           </button>
-        </main>
+        </section>
         {modal}
       </>
     )
@@ -99,8 +96,7 @@ export function ThumbnailGridView({
 
   return (
     <>
-      <main className="mx-auto min-h-dvh w-full max-w-6xl px-4 py-6 text-slate-950 sm:px-6 sm:py-10 dark:text-slate-50">
-        <Header />
+      <section aria-label="Thumbnail grid">
         <InfiniteScroll
           dataLength={photos.length}
           endMessage={null}
@@ -126,34 +122,9 @@ export function ThumbnailGridView({
             </button>
           </section>
         )}
-      </main>
+      </section>
       {modal}
     </>
-  )
-}
-
-function Header() {
-  return (
-    <header className="mb-6 flex flex-col gap-4 sm:mb-8 sm:flex-row sm:items-end sm:justify-between">
-      <div>
-        <p className="text-sm font-semibold uppercase tracking-[0.24em] text-slate-500 dark:text-slate-400">
-          FutuBrowser
-        </p>
-        <h1 className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">
-          Thumbnail Grid
-        </h1>
-        <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600 dark:text-slate-300">
-          Browse a stream of photos.
-        </p>
-      </div>
-      <button
-        aria-label="Grid options"
-        className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-700 shadow-sm transition hover:-translate-y-0.5 hover:bg-slate-100 focus:outline focus:outline-2 focus:outline-offset-2 focus:outline-slate-500 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-200 dark:hover:bg-slate-900"
-        type="button"
-      >
-        <ViewGrid aria-hidden="true" height={22} width={22} />
-      </button>
-    </header>
   )
 }
 
