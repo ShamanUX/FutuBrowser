@@ -6,16 +6,26 @@ import configPrettier from 'eslint-config-prettier'
 import { defineConfig } from 'eslint/config'
 
 export default defineConfig([
-    {
-        ignores: ['node_modules/**'],
+  {
+    ignores: ['node_modules/**', '.react-router/'],
+  },
+  {
+    files: ['**/*.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
+    plugins: { js },
+    extends: ['js/recommended'],
+    languageOptions: { globals: globals.browser },
+  },
+  tseslint.configs.recommended,
+  {
+    ...pluginReact.configs.flat.recommended,
+    settings: {
+      react: {
+        version: '^19.2.14',
+      },
     },
-    {
-        files: ['**/*.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
-        plugins: { js },
-        extends: ['js/recommended'],
-        languageOptions: { globals: globals.browser },
+    rules: {
+      'react/react-in-jsx-scope': 'off',
     },
-    tseslint.configs.recommended,
-    pluginReact.configs.flat.recommended,
-    configPrettier,
+  },
+  configPrettier,
 ])
