@@ -1,6 +1,6 @@
 # FutuBrowser
 
-FutuBrowser is a React Router photo browsing app. The current app focuses on one feature: browsing image thumbnails in a grid, with more features indicated as upcoming in the Home header.
+FutuBrowser is a React Router photo browsing app. The current app focuses on one feature: browsing image thumbnails in a grid.
 
 ## Coding Conventions
 
