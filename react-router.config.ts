@@ -1,6 +1,6 @@
 import type { Config } from '@react-router/dev/config'
 
 export default {
-  // Config options...
+  basename: process.env.GITHUB_PAGES === 'true' ? '/FutuBrowser' : '/',
   ssr: false,
 } satisfies Config

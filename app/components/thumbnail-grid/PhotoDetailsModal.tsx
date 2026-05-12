@@ -149,7 +149,7 @@ export function PhotoDetailsModal({
 
       <button
         aria-label="Close photo details"
-        className="fixed right-3 top-3 z-[60] inline-flex h-12 w-12 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-950 shadow-xl shadow-slate-950/20 ring-1 ring-slate-950/5 transition hover:scale-110 hover:bg-slate-100 focus:outline focus:outline-2 focus:outline-offset-2 focus:outline-white sm:right-6 sm:top-6 sm:h-14 sm:w-14 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-50 dark:ring-white/10 dark:hover:bg-slate-800"
+        className="fixed right-3 top-3 z-60 inline-flex h-12 w-12 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-950 shadow-xl shadow-slate-950/20 ring-1 ring-slate-950/5 transition hover:scale-110 hover:bg-slate-100 focus:outline focus:outline-offset-2 focus:outline-white sm:right-6 sm:top-6 sm:h-14 sm:w-14 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-50 dark:ring-white/10 dark:hover:bg-slate-800"
         onClick={onClose}
         type="button"
       >
@@ -160,7 +160,7 @@ export function PhotoDetailsModal({
         <>
           <button
             aria-label="Previous photo"
-            className="fixed left-3 top-1/2 z-[60] inline-flex h-14 w-14 -translate-y-1/2 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-950 shadow-xl shadow-slate-950/20 ring-1 ring-slate-950/5 transition hover:-translate-x-0.5 hover:bg-slate-100 focus:outline focus:outline-2 focus:outline-offset-2 focus:outline-white disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:translate-x-0 sm:left-6 sm:h-16 sm:w-16 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-50 dark:ring-white/10 dark:hover:bg-slate-800"
+            className="fixed left-3 top-1/2 z-60 inline-flex h-14 w-14 -translate-y-1/2 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-950 shadow-xl shadow-slate-950/20 ring-1 ring-slate-950/5 transition hover:-translate-x-0.5 hover:bg-slate-100 focus:outline focus:outline-offset-2 focus:outline-white disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:translate-x-0 sm:left-6 sm:h-16 sm:w-16 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-50 dark:ring-white/10 dark:hover:bg-slate-800"
             disabled={isPreviousDisabled}
             onClick={() => {
               if (!isPreviousDisabled) {
@@ -173,7 +173,7 @@ export function PhotoDetailsModal({
           </button>
           <button
             aria-label="Next photo"
-            className="fixed right-3 top-1/2 z-[60] inline-flex h-14 w-14 -translate-y-1/2 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-950 shadow-xl shadow-slate-950/20 ring-1 ring-slate-950/5 transition hover:translate-x-0.5 hover:bg-slate-100 focus:outline focus:outline-2 focus:outline-offset-2 focus:outline-white disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:translate-x-0 sm:right-6 sm:h-16 sm:w-16 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-50 dark:ring-white/10 dark:hover:bg-slate-800"
+            className="fixed right-3 top-1/2 z-60 inline-flex h-14 w-14 -translate-y-1/2 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-950 shadow-xl shadow-slate-950/20 ring-1 ring-slate-950/5 transition hover:translate-x-0.5 hover:bg-slate-100 focus:outline focus:outline-offset-2 focus:outline-white disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:translate-x-0 sm:right-6 sm:h-16 sm:w-16 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-50 dark:ring-white/10 dark:hover:bg-slate-800"
             disabled={isNextDisabled}
             onClick={() => {
               if (!isNextDisabled) {
@@ -216,7 +216,7 @@ function DetailRow({ label, value }: { label: string; value: string }) {
       <dt className="font-semibold text-slate-500 dark:text-slate-400">
         {label}
       </dt>
-      <dd className="break-words text-slate-950 dark:text-slate-100">
+      <dd className="wrap-break-word text-slate-950 dark:text-slate-100">
         {value}
       </dd>
     </div>

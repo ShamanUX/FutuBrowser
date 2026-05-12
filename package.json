@@ -4,6 +4,7 @@
   "type": "module",
   "scripts": {
     "build": "react-router build",
+    "deploy": "node scripts/deploy-github-pages.mjs",
     "dev": "react-router dev",
     "start": "react-router-serve ./build/server/index.js",
     "test": "vitest run",
@@ -41,6 +42,7 @@
     "eslint": "^10.3.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-react": "^7.37.5",
+    "gh-pages": "^6.3.0",
     "globals": "^17.6.0",
     "husky": "^9.1.7",
     "jiti": "^2.7.0",
