@@ -8,13 +8,10 @@ import {
 import { createMemoryRouter, RouterProvider } from 'react-router'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
-import Home from './home'
-import {
-  fetchPhoto,
-  fetchPhotosPage,
-} from '../components/thumbnail-grid/photosApi'
+import { ThumbnailGridContainer } from './ThumbnailGridContainer'
+import { fetchPhoto, fetchPhotosPage } from './photosApi'
 
-vi.mock('../components/thumbnail-grid/photosApi', () => ({
+vi.mock('./photosApi', () => ({
   fetchPhoto: vi.fn(),
   fetchPhotosPage: vi.fn(),
 }))
@@ -65,11 +62,11 @@ const secondPhoto = {
   thumbnailUrl: 'https://picsum.photos/id/2/300/300',
 }
 
-function renderHome(initialEntry = '/') {
+function renderThumbnailGrid(initialEntry = '/') {
   const router = createMemoryRouter(
     [
-      { path: '/', element: <Home /> },
-      { path: '/p/:photoId/', element: <Home /> },
+      { path: '/', element: <ThumbnailGridContainer /> },
+      { path: '/p/:photoId/', element: <ThumbnailGridContainer /> },
     ],
     { initialEntries: [initialEntry] }
   )
@@ -79,7 +76,7 @@ function renderHome(initialEntry = '/') {
   return router
 }
 
-describe('Home', () => {
+describe('ThumbnailGridContainer', () => {
   beforeEach(() => {
     fetchPhotosPageMock.mockReset()
     fetchPhotoMock.mockReset()
@@ -93,7 +90,7 @@ describe('Home', () => {
   it('shows thumbnails are loading while the first page loads', () => {
     fetchPhotosPageMock.mockReturnValue(new Promise(() => {}))
 
-    renderHome()
+    renderThumbnailGrid()
 
     expect(screen.getByText('Loading thumbnails')).toBeInTheDocument()
   })
@@ -104,7 +101,7 @@ describe('Home', () => {
       totalCount: 1,
     })
 
-    renderHome()
+    renderThumbnailGrid()
 
     expect(
       await screen.findByRole('img', { name: firstPhoto.title })
@@ -119,7 +116,7 @@ describe('Home', () => {
       .mockRejectedValueOnce(new Error('Network unavailable'))
       .mockResolvedValueOnce({ items: [firstPhoto], totalCount: 1 })
 
-    renderHome()
+    renderThumbnailGrid()
 
     expect(
       await screen.findByText('Could not load thumbnails')
@@ -137,7 +134,7 @@ describe('Home', () => {
       .mockResolvedValueOnce({ items: [firstPhoto], totalCount: 2 })
       .mockResolvedValueOnce({ items: [secondPhoto], totalCount: 2 })
 
-    renderHome()
+    renderThumbnailGrid()
 
     expect(
       await screen.findByRole('img', { name: firstPhoto.title })
@@ -161,7 +158,7 @@ describe('Home', () => {
       .mockRejectedValueOnce(new Error('Next page unavailable'))
       .mockResolvedValueOnce({ items: [secondPhoto], totalCount: 2 })
 
-    renderHome()
+    renderThumbnailGrid()
 
     expect(
       await screen.findByRole('img', { name: firstPhoto.title })
@@ -194,7 +191,7 @@ describe('Home', () => {
       totalCount: 2,
     })
 
-    const router = renderHome()
+    const router = renderThumbnailGrid()
 
     fireEvent.click(
       await screen.findByRole('link', {
@@ -215,7 +212,7 @@ describe('Home', () => {
     fetchPhotosPageMock.mockResolvedValue({ items: [], totalCount: 2 })
     fetchPhotoMock.mockResolvedValue(firstPhoto)
 
-    renderHome('/p/1/')
+    renderThumbnailGrid('/p/1/')
 
     const dialog = await screen.findByRole('dialog', { name: firstPhoto.title })
 
@@ -232,7 +229,7 @@ describe('Home', () => {
     fetchPhotosPageMock.mockResolvedValue({ items: [], totalCount: 3 })
     fetchPhotoMock.mockReturnValue(new Promise(() => {}))
 
-    renderHome('/p/2/')
+    renderThumbnailGrid('/p/2/')
 
     const dialog = await screen.findByRole('dialog', {
       name: 'Loading photo details',
@@ -255,7 +252,7 @@ describe('Home', () => {
     })
     fetchPhotoMock.mockResolvedValue(firstPhoto)
 
-    renderHome('/p/1/')
+    renderThumbnailGrid('/p/1/')
 
     const dialog = await screen.findByRole('dialog', { name: firstPhoto.title })
     const image = within(dialog).getByRole('img', { name: firstPhoto.title })
@@ -274,7 +271,7 @@ describe('Home', () => {
     })
     fetchPhotoMock.mockResolvedValue(firstPhoto)
 
-    renderHome('/p/1/')
+    renderThumbnailGrid('/p/1/')
 
     const dialog = await screen.findByRole('dialog', { name: firstPhoto.title })
     const image = within(dialog).getByRole('img', { name: firstPhoto.title })
@@ -292,7 +289,7 @@ describe('Home', () => {
     })
     fetchPhotoMock.mockResolvedValue(firstPhoto)
 
-    const router = renderHome('/p/1/')
+    const router = renderThumbnailGrid('/p/1/')
 
     const closeButton = await screen.findByRole('button', {
       name: 'Close photo details',
@@ -309,7 +306,7 @@ describe('Home', () => {
     })
     fetchPhotoMock.mockResolvedValue(firstPhoto)
 
-    renderHome('/p/1/')
+    renderThumbnailGrid('/p/1/')
 
     const dialog = await screen.findByRole('dialog', { name: firstPhoto.title })
 
@@ -327,7 +324,7 @@ describe('Home', () => {
       photoId === firstPhoto.id ? firstPhoto : secondPhoto
     )
 
-    const router = renderHome('/p/1/')
+    const router = renderThumbnailGrid('/p/1/')
 
     const dialog = await screen.findByRole('dialog', { name: firstPhoto.title })
     fireEvent.click(within(dialog).getByRole('button', { name: 'Next photo' }))
@@ -345,7 +342,7 @@ describe('Home', () => {
     })
     fetchPhotoMock.mockResolvedValue(firstPhoto)
 
-    renderHome('/p/1/')
+    renderThumbnailGrid('/p/1/')
 
     const dialog = await screen.findByRole('dialog', { name: firstPhoto.title })
 
