@@ -27,8 +27,7 @@ function Header() {
         </p>
 
         <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600 dark:text-slate-300">
-          Thumbnail browsing is available now. More ways to explore photos are
-          coming soon.
+          Browse beautiful Futus!
         </p>
       </div>
       <div
