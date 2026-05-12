@@ -82,7 +82,7 @@ export function ThumbnailGridView({
             </p>
           </section>
           <button
-            className="mt-4 rounded-full border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-950 shadow-sm transition hover:bg-slate-100 focus:outline focus:outline-2 focus:outline-offset-2 focus:outline-slate-500 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-50 dark:hover:bg-slate-900"
+            className="mt-4 rounded-full border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-950 shadow-sm transition hover:bg-slate-100 focus:outline focus:outline-offset-2 focus:outline-slate-500 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-50 dark:hover:bg-slate-900"
             onClick={onRetry}
             type="button"
           >
@@ -114,7 +114,7 @@ export function ThumbnailGridView({
           <section className="mt-5 rounded-2xl border border-amber-200 bg-amber-50 p-4 text-amber-950 dark:border-amber-900/70 dark:bg-amber-950/30 dark:text-amber-100">
             <p className="text-sm font-medium">{loadMoreError}</p>
             <button
-              className="mt-3 rounded-full border border-amber-300 bg-white px-4 py-2 text-sm font-semibold text-amber-950 shadow-sm transition hover:bg-amber-100 focus:outline focus:outline-2 focus:outline-offset-2 focus:outline-amber-500 dark:border-amber-800 dark:bg-slate-950 dark:text-amber-100 dark:hover:bg-amber-950/50"
+              className="mt-3 rounded-full border border-amber-300 bg-white px-4 py-2 text-sm font-semibold text-amber-950 shadow-sm transition hover:bg-amber-100 focus:outline focus:outline-offset-2 focus:outline-amber-500 dark:border-amber-800 dark:bg-slate-950 dark:text-amber-100 dark:hover:bg-amber-950/50"
               onClick={onLoadMore}
               type="button"
             >

@@ -47,6 +47,7 @@ The app runs at `http://localhost:5173` by default.
 - `pnpm lint`: run ESLint with auto-fix enabled and fail on warnings.
 - `pnpm build`: create a production build.
 - `pnpm start`: serve the production build from `./build/server/index.js`.
+- `pnpm deploy`: build the SPA for GitHub Pages and publish `build/client`.
 
 ## Testing
 
@@ -79,3 +80,15 @@ pnpm start
 ```
 
 React Router outputs the production build to `build/`, including client assets and server code.
+
+## GitHub Pages Deployment
+
+Deploy the SPA to GitHub Pages:
+
+```bash
+pnpm deploy
+```
+
+The deploy script builds with the `/FutuBrowser/` base path, copies `build/client/index.html` to `build/client/404.html` for client-side route fallback, adds `.nojekyll`, and publishes `build/client` with `gh-pages`.
+
+Use this for project pages served from `https://<username>.github.io/FutuBrowser/`. If the repository name changes, update the GitHub Pages base path in `vite.config.ts` and `react-router.config.ts`.

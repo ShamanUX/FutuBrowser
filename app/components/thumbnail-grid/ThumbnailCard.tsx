@@ -10,7 +10,7 @@ export function ThumbnailCard({ photo }: ThumbnailCardProps) {
   return (
     <Link
       aria-label={`View details for ${photo.title}`}
-      className="block rounded-md focus:outline focus:outline-2 focus:outline-offset-2 focus:outline-slate-500 sm:rounded-lg"
+      className="block rounded-md focus:outline focus:outline-offset-2 focus:outline-slate-500 sm:rounded-lg"
       preventScrollReset
       to={`/p/${photo.id}/`}
     >
